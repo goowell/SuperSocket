@@ -541,11 +541,18 @@ namespace SuperSocket.SocketBase
 
             if (currentRequestLength >= maxRequestLength)
             {
-                if (Logger.IsErrorEnabled)
-                    Logger.Error(this, string.Format("Max request length: {0}, current processed length: {1}", maxRequestLength, currentRequestLength));
+                if (AppServer.Config.LogLargeMessage)
+                {
+                    Logger.Warn($"Received large message: {string.Join(" ", readBuffer.Skip(offset).Take(length))}");
+                }
+                else
+                {
+                    if (Logger.IsErrorEnabled)
+                        Logger.Error(this, string.Format("Max request length: {0}, current processed length: {1}", maxRequestLength, currentRequestLength));
 
-                Close(CloseReason.ProtocolError);
-                return null;
+                    Close(CloseReason.ProtocolError);
+                    return null;
+                }
             }
 
             //If next Receive filter wasn't set, still use current Receive filter in next round received data processing
