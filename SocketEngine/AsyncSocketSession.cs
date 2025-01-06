@@ -90,15 +90,22 @@ namespace SuperSocket.SocketEngine
                 return;
             }
 
-            var count = queue.Sum(q => q.Count);
-
-            if (count != e.BytesTransferred)
+            try
             {
-                queue.InternalTrim(e.BytesTransferred);
-                AppSession.Logger.InfoFormat("{0} of {1} were transferred, send the rest {2} bytes right now.", e.BytesTransferred, count, queue.Sum(q => q.Count));
-                ClearPrevSendState(e);
-                SendAsync(queue);
-                return;
+                var count = queue.Sum(q => q.Count);
+
+                if (count != e.BytesTransferred)
+                {
+                    queue.InternalTrim(e.BytesTransferred);
+                    AppSession.Logger.InfoFormat("{0} of {1} were transferred, send the rest {2} bytes right now.", e.BytesTransferred, count, queue.Sum(q => q.Count));
+                    ClearPrevSendState(e);
+                    SendAsync(queue);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                AppSession.Logger.Warn($"Message send error:{ex}, {e}"); 
             }
 
             ClearPrevSendState(e);

@@ -322,7 +322,10 @@ namespace SuperSocket.SocketEngine
                 this.Close(CloseReason.InternalError);
                 return;
             }
-
+            if (newQueue==null)
+            {
+                AppSession.Logger.Error("newQueue is null.");
+            }
             var oldQueue = Interlocked.CompareExchange(ref m_SendingQueue, newQueue, queue);
 
             if (!ReferenceEquals(oldQueue, queue))
@@ -399,8 +402,11 @@ namespace SuperSocket.SocketEngine
 
         protected virtual void OnSendingCompleted(SendingQueue queue)
         {
-            queue.Clear();
-            m_SendingQueuePool.Push(queue);
+            if (queue!=null)
+            {
+                queue.Clear();
+                m_SendingQueuePool.Push(queue);
+            }
 
             var newQueue = m_SendingQueue;
 
