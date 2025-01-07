@@ -381,6 +381,15 @@ namespace SuperSocket.SocketBase.Config
         public bool LogAllSocketException { get; set; }
 
         /// <summary>
+        /// Gets a value indicating whether [log large message, which over than MaxRequestLength].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [Log Large Message]; otherwise, <c>false</c>.
+        /// </value>
+        [HotUpdate]
+        public bool LogLargeMessage { get; set; }
+
+        /// <summary>
         /// Gets/sets the default text encoding.
         /// </summary>
         /// <value>

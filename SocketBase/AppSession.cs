@@ -543,7 +543,7 @@ namespace SuperSocket.SocketBase
             {
                 if (AppServer.Config.LogLargeMessage)
                 {
-                    Logger.Warn($"Received large message: {string.Join(" ", readBuffer.Skip(offset).Take(length))}");
+                    Logger.Warn($"Received large message: {Encoding.UTF8.GetString(readBuffer, offset, length)}");
                 }
                 else
                 {

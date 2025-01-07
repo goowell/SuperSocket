@@ -180,6 +180,18 @@ namespace SuperSocket.SocketEngine.Configuration
         }
 
         /// <summary>
+        /// Gets a value indicating whether [log large message].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [log large message]; otherwise, <c>false</c>.
+        /// </value>
+        [ConfigurationProperty("logLargeMessage", IsRequired = false, DefaultValue = false)]
+        public bool LogLargeMessage
+        {
+            get { return (bool)this["logLargeMessage"]; }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether clear idle session.
         /// </summary>
         /// <value><c>true</c> if clear idle session; otherwise, <c>false</c>.</value>
