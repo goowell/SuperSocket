@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -194,8 +195,10 @@ namespace SuperSocket.SocketEngine
                 //There is no sending was started after the m_Closed ws set to 'true'
                 if (Interlocked.CompareExchange(ref m_SendingQueue, null, sendingQueue) == sendingQueue)
                 {
+                    var id = sendingQueue.TrackID;
                     sendingQueue.Clear();
                     m_SendingQueuePool.Push(sendingQueue);
+                    AppSession.Logger.Error($"Sending queue {id} cleared by client closeing:{reason}");
                     break;
                 }
             }
@@ -350,7 +353,7 @@ namespace SuperSocket.SocketEngine
 
             if (queue.Count == 0)
             {
-                AppSession.Logger.Error("There is no data to be sent in the queue.");
+                AppSession.Logger.Error($"There is no data to be sent in the queue {queue.TrackID}.");
                 m_SendingQueuePool.Push(queue);
                 OnSendEnd(false);
                 this.Close(CloseReason.InternalError);
@@ -492,6 +495,7 @@ namespace SuperSocket.SocketEngine
             if (!TryAddStateFlag(SocketState.InClosing))
                 return;
 
+            AppSession.Logger.Error($"Socket will be closed by {reason}.");
             Socket client;
 
             //No need to clean the socket instance
